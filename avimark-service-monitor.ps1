@@ -22,7 +22,7 @@
 $servicePattern = "*avimark*"
 $waitInterval = 300  # seconds (5 minutes)
 $startupDelay = 300  # additional seconds to wait after system startup (5 minutes)
-$outputFile = "C:\avimark-service-monitor"
+$outputFile = "C:\avimark-service-monitor.txt"
 
 # Check if the system has been up for less than 5 minutes (300 seconds)
 $uptime = (Get-CimInstance -ClassName Win32_OperatingSystem).LastBootUpTime
