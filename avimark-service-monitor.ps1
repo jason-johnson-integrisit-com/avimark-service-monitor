@@ -1,3 +1,24 @@
+<#
+.SYNOPSIS
+  Checks for avimark service status and if stopped attempts to start. Every 5 minutes.,
+.DESCRIPTION
+  <Brief description of script>
+.PARAMETER <Parameter_Name>
+    
+.INPUTS
+  None
+.OUTPUTS
+  Not much
+.NOTES
+  Version:        1.0
+  Author:         Jason Johnson
+  Creation Date:  8.22.2023
+  Purpose/Change: To make things work better
+  
+.EXAMPLE
+  Run it via task manager.
+#>
+
 $servicePattern = "*avimark*"
 $waitInterval = 180  # seconds (3 minutes)
 $startupDelay = 300  # additional seconds to wait after system startup (5 minutes)
