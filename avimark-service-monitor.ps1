@@ -10,7 +10,7 @@
 .OUTPUTS
   Not much
 .NOTES
-  Version:        1.1
+  Version:        1.11
   Author:         Jason Johnson
   Creation Date:  8.22.2023
   Purpose/Change: To make things work better
