@@ -10,7 +10,7 @@
 .OUTPUTS
   Not much
 .NOTES
-  Version:        1.0
+  Version:        1.1
   Author:         Jason Johnson
   Creation Date:  8.22.2023
   Purpose/Change: To make things work better
@@ -22,12 +22,13 @@
 $servicePattern = "*avimark*"
 $waitInterval = 300  # seconds (5 minutes)
 $startupDelay = 300  # additional seconds to wait after system startup (5 minutes)
+$outputFile = "C:\avimark-service-monitor"
 
 # Check if the system has been up for less than 5 minutes (300 seconds)
 $uptime = (Get-CimInstance -ClassName Win32_OperatingSystem).LastBootUpTime
 $elapsedTime = New-TimeSpan -Start $uptime -End (Get-Date)
 if ($elapsedTime.TotalSeconds -lt 300) {
-    Write-Output "System recently started. Waiting for $startupDelay seconds to allow delayed services to start..."
+    Write-Output "System recently started. Waiting for $startupDelay seconds to allow delayed services to start..." | Out-File $outputFile -Append
     Start-Sleep -Seconds $startupDelay
 }
 
@@ -39,12 +40,15 @@ if (-not $services) {
     exit
 }
 
+$servicesRunning = $false
+
 foreach ($service in $services) {
     Write-Output "Checking service: $($service.DisplayName)"
 
     while ($true) {  # Endless loop
         if ($service.Status -eq 'Stopped') {
             Write-Output "Service $($service.DisplayName) is stopped. Waiting for $waitInterval seconds..."
+
             Start-Sleep -Seconds $waitInterval
             $service.Refresh()
 
@@ -58,6 +62,7 @@ foreach ($service in $services) {
                     $service.Refresh()
 
                     if ($service.Status -eq 'Running') {
+                        $servicesRunning = $true
                         Write-Output "Service $($service.DisplayName) is running. Exiting loop."
                         break
                     }
@@ -77,8 +82,14 @@ foreach ($service in $services) {
                 }
             }
         } else {
+            $servicesRunning = $true
             Write-Output "Service $($service.DisplayName) is already running. Exiting loop."
             break
         }
     }
+}
+
+# If any services were found running, write output to file
+if ($servicesRunning) {
+    Write-Output "Service $($service.DisplayName) is running." | Out-File $outputFile -Force
 }
